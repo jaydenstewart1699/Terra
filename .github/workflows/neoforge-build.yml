@@ -31,7 +31,7 @@ jobs:
       - name: Build NeoForge JAR
         run: ./gradlew :platforms:neoforge:build -Pterra.targetPlatform=neoforge --stacktrace
 
-      - name: Smoke test NeoForge dedicated server
+      - name: Smoke test Terra world generation on NeoForge dedicated server
         shell: bash
         run: |
           set -uo pipefail
@@ -63,6 +63,7 @@ jobs:
           fi
           cp "$terra_jar" "$server_dir/mods/"
           printf 'eula=true\n' > "$server_dir/eula.txt"
+          printf 'level-type=terra:overworld/overworld\n' > "$server_dir/server.properties"
 
           (cd "$server_dir" && bash ./run.sh nogui) > "$log_file" 2>&1 &
           server_pid=$!
@@ -107,4 +108,4 @@ jobs:
             !platforms/neoforge/build/libs/*-sources.jar
             !platforms/neoforge/build/libs/*-javadoc.jar
             !platforms/neoforge/build/libs/*-dev.jar
-            !platforms/neoforge/build/libs/*-shadow.jar
+            !platforms/neoforge/build/libs/*-shaded.jar
