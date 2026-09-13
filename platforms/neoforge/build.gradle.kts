@@ -67,9 +67,12 @@ tasks {
     }
 
     shadowJar {
-        // Checker Framework annotations are compile-time metadata. Bundling them
-        // creates a split Java module package with NeoForge's runtime copy.
+        // These libraries are exposed as top-level JarJar dependencies below.
+        // Keeping their transitive copies in Terra's shaded module creates split
+        // Java packages when NeoForge resolves the production mod layer.
         exclude("org/checkerframework/**")
+        exclude("io/leangen/geantyref/**")
+        exclude("org/incendo/cloud/**")
     }
 
     remapJar {
