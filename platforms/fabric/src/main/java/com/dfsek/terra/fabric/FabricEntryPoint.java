@@ -18,15 +18,33 @@
 package com.dfsek.terra.fabric;
 
 import net.fabricmc.api.ModInitializer;
+import net.minecraft.server.command.ServerCommandSource;
+import org.incendo.cloud.SenderMapper;
+import org.incendo.cloud.execution.ExecutionCoordinator;
+import org.incendo.cloud.fabric.FabricServerCommandManager;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import com.dfsek.terra.lifecycle.LifecycleEntryPoint;
+import com.dfsek.terra.api.command.CommandSender;
+import com.dfsek.terra.api.event.events.platform.CommandRegistrationEvent;
 
 
 public class FabricEntryPoint implements ModInitializer {
+    private static final Logger LOGGER = LoggerFactory.getLogger(FabricEntryPoint.class);
     private static final FabricPlatform TERRA_PLUGIN = new FabricPlatform();
 
     @Override
     public void onInitialize() {
-        LifecycleEntryPoint.initialize("Fabric", TERRA_PLUGIN);
+        LOGGER.info("Initializing Terra Fabric mod...");
+
+        FabricServerCommandManager<CommandSender> manager = new FabricServerCommandManager<>(
+            ExecutionCoordinator.simpleCoordinator(),
+            SenderMapper.create(
+                serverCommandSource -> (CommandSender) serverCommandSource,
+                commandSender -> (ServerCommandSource) commandSender)
+        );
+
+        manager.brigadierManager().setNativeNumberSuggestions(false);
+        TERRA_PLUGIN.getEventManager().callEvent(new CommandRegistrationEvent(manager));
     }
 }

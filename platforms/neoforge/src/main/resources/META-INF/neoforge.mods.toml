@@ -1,0 +1,39 @@
+modLoader = "javafml"
+loaderVersion = "[4,)"
+license = "GPL-3.0-or-later"
+issueTrackerURL = "@ISSUES@"
+
+[[mods]]
+modId = "terra"
+version = "@VERSION@"
+displayName = "Terra"
+displayURL = "@WIKI@"
+authors = "dfsek and contributors"
+description = "@DESCRIPTION@"
+
+[[mixins]]
+config = "terra.common.mixins.json"
+
+[[mixins]]
+config = "terra.lifecycle.mixins.json"
+
+[[dependencies.terra]]
+modId = "neoforge"
+type = "required"
+versionRange = "[21.1.56,)"
+ordering = "NONE"
+side = "BOTH"
+
+[[dependencies.terra]]
+modId = "cloud"
+type = "required"
+versionRange = "[2.0.0-beta.9,)"
+ordering = "AFTER"
+side = "BOTH"
+
+[[dependencies.terra]]
+modId = "minecraft"
+type = "required"
+versionRange = "[1.21.1,1.21.2)"
+ordering = "NONE"
+side = "BOTH"
