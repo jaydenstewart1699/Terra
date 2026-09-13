@@ -35,14 +35,36 @@ jobs:
         shell: bash
         run: |
           set -uo pipefail
-          run_dir="platforms/neoforge/run"
-          log_file="$run_dir/terra-neoforge-smoke.log"
-          mkdir -p "$run_dir"
-          printf 'eula=true\n' > "$run_dir/eula.txt"
+          neoforge_version="21.1.56"
+          server_dir="$RUNNER_TEMP/terra-neoforge-server"
+          installer="$RUNNER_TEMP/neoforge-$neoforge_version-installer.jar"
+          log_file="$server_dir/terra-neoforge-smoke.log"
 
-          ./gradlew :platforms:neoforge:runServer \
-            -Pterra.targetPlatform=neoforge \
-            --args='nogui' > "$log_file" 2>&1 &
+          curl --fail --location --retry 5 \
+            "https://maven.neoforged.net/releases/net/neoforged/neoforge/$neoforge_version/neoforge-$neoforge_version-installer.jar" \
+            --output "$installer"
+          mkdir -p "$server_dir"
+          (cd "$server_dir" && java -jar "$installer" --installServer)
+
+          mkdir -p "$server_dir/mods"
+          shopt -s nullglob
+          release_jars=(platforms/neoforge/build/libs/Terra-neoforge-*.jar)
+          terra_jar=""
+          for candidate in "${release_jars[@]}"; do
+            case "$candidate" in
+              *-dev.jar|*-sources.jar|*-javadoc.jar|*-shaded.jar) continue ;;
+            esac
+            terra_jar="$candidate"
+            break
+          done
+          if [ -z "$terra_jar" ]; then
+            echo 'Could not find the remapped NeoForge release JAR.' >&2
+            exit 1
+          fi
+          cp "$terra_jar" "$server_dir/mods/"
+          printf 'eula=true\n' > "$server_dir/eula.txt"
+
+          (cd "$server_dir" && bash ./run.sh nogui) > "$log_file" 2>&1 &
           server_pid=$!
 
           cleanup() {
@@ -57,8 +79,10 @@ jobs:
               exit 0
             fi
             if ! kill -0 "$server_pid" 2>/dev/null; then
+              set +e
               wait "$server_pid"
               status=$?
+              set -e
               cat "$log_file"
               if [ "$status" -eq 0 ]; then
                 echo 'NeoForge server exited before reporting a successful start.' >&2

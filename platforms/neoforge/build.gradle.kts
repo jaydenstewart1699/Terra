@@ -33,6 +33,13 @@ dependencies {
 
     modImplementation("org.incendo", "cloud-neoforge", Versions.NeoForge.cloud)
     include("org.incendo", "cloud-neoforge", Versions.NeoForge.cloud)
+    // NeoForge does not recursively discover JarJar dependencies inside another
+    // JarJar dependency, so expose Cloud's runtime libraries at Terra's top level.
+    include("org.incendo", "cloud-minecraft-modded-common", Versions.NeoForge.cloud)
+    include("org.incendo", "cloud-brigadier", Versions.NeoForge.cloud)
+    include("org.incendo", "cloud-core", "2.0.0")
+    include("org.incendo", "cloud-services", "2.0.0")
+    include("io.leangen.geantyref", "geantyref", "1.3.15")
 
 }
 
