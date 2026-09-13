@@ -66,6 +66,12 @@ tasks {
         }
     }
 
+    shadowJar {
+        // Checker Framework annotations are compile-time metadata. Bundling them
+        // creates a split Java module package with NeoForge's runtime copy.
+        exclude("org/checkerframework/**")
+    }
+
     remapJar {
         dependsOn("installAddons")
 
