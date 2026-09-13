@@ -48,8 +48,8 @@ public abstract class ItemStackMixin {
     @Shadow
     public abstract net.minecraft.item.Item getItem();
 
-    @Shadow
-    public abstract boolean isDamageable();
+    @Shadow(prefix = "shadow$")
+    public abstract boolean shadow$isDamageable();
 
     @Shadow
     public abstract ComponentMap getComponents();
@@ -83,6 +83,6 @@ public abstract class ItemStackMixin {
 
     @Intrinsic
     public boolean terra$isDamageable() {
-        return isDamageable();
+        return shadow$isDamageable();
     }
 }

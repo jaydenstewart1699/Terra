@@ -33,20 +33,20 @@ public abstract class ItemStackDamageableMixin {
     @Shadow
     public abstract boolean isDamaged();
 
-    @Shadow
-    public abstract int getDamage();
+    @Shadow(prefix = "shadow$")
+    public abstract int shadow$getDamage();
 
-    @Shadow
-    public abstract void setDamage(int damage);
+    @Shadow(prefix = "shadow$")
+    public abstract void shadow$setDamage(int damage);
 
     @Intrinsic
     public int terra$getDamage() {
-        return getDamage();
+        return shadow$getDamage();
     }
 
     @Intrinsic
     public void terra$setDamage(int damage) {
-        setDamage(damage);
+        shadow$setDamage(damage);
     }
 
     public boolean terra$hasDamage() {
