@@ -12,10 +12,10 @@ authors = "dfsek and contributors"
 description = "@DESCRIPTION@"
 
 [[mixins]]
-config = "terra.common.mixins.json"
+config = "terra.common.neoforge.mixins.json"
 
 [[mixins]]
-config = "terra.lifecycle.mixins.json"
+config = "terra.lifecycle.neoforge.mixins.json"
 
 [[dependencies.terra]]
 modId = "neoforge"
