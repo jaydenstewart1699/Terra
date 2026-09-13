@@ -71,6 +71,9 @@ tasks {
         // Keeping their transitive copies in Terra's shaded module creates split
         // Java packages when NeoForge resolves the production mod layer.
         exclude("org/checkerframework/**")
+        exclude("com/google/errorprone/**")
+        exclude("org/jetbrains/annotations/**")
+        exclude("org/intellij/lang/annotations/**")
         exclude("io/leangen/geantyref/**")
         exclude("org/incendo/cloud/**")
     }
