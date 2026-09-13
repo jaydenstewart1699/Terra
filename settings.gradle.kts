@@ -16,11 +16,23 @@ includeImmediateChildren(file("common/implementation"), "implementation")
 
 includeImmediateChildren(file("common/addons"), "addon")
 
-includeImmediateChildren(file("platforms"), "platform")
+val targetPlatform = providers.gradleProperty("terra.targetPlatform").orNull
 
-includeImmediateChildren(file("platforms/bukkit/nms"), "Bukkit NMS")
-
-include(":platforms:bukkit:common")
+when (targetPlatform) {
+    null -> {
+        includeImmediateChildren(file("platforms"), "platform")
+        includeImmediateChildren(file("platforms/bukkit/nms"), "Bukkit NMS")
+        include(":platforms:bukkit:common")
+    }
+    "neoforge" -> {
+        // Keep NeoForge builds independent of platform-specific dependencies such as
+        // Bukkit's historical Paper development bundles.
+        include(":platforms:mixin-common")
+        include(":platforms:mixin-lifecycle")
+        include(":platforms:neoforge")
+    }
+    else -> error("Unsupported terra.targetPlatform '$targetPlatform'")
+}
 
 pluginManagement {
     repositories {
